@@ -13,7 +13,6 @@ class VINDelete(VINInfoBase):
     vin: str
     deleted_from_cache: bool = True
 
-
 class VINInfoGet(VINInfoBase):
     vin: str
     make: str
