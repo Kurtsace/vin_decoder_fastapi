@@ -1,14 +1,17 @@
-from fastapi import FastAPI, HTTPException, Path, Depends
-from fastapi.responses import RedirectResponse
+from codecs import ignore_errors
+import shutil
+from fastapi import FastAPI, HTTPException, Path, Depends, BackgroundTasks
+from fastapi.responses import RedirectResponse, FileResponse
 from sqlalchemy.orm import Session
+import uvicorn
+import os
 
-from .persistence.database import engine, SessionLocal
-from .persistence.models import Base
-from .persistence import crud
-from .services import vPIC
+from persistence.models import Base
+from persistence.database import engine, SessionLocal
+from persistence import crud
+from services import vPIC
 
-# Create DB tables 
-Base.metadata.create_all(bind=engine)
+
 
 # Init application
 app = FastAPI()
@@ -20,6 +23,17 @@ def get_db():
         yield db
     finally:
         db.close()
+
+
+@app.on_event('startup')
+def startup_event():
+    '''
+    App startup event.
+    Create DB tables
+    '''
+
+    # Create DB tables 
+    Base.metadata.create_all(bind=engine)
 
 
 #################### ENDPOINTS ####################
@@ -65,6 +79,7 @@ async def lookup(db: Session = Depends(get_db), vin: str = Path(regex="^[A-Za-z0
         print(e)
         return HTTPException(status_code=400, detail="Unable to lookup vin: {}".format(vin))
 
+
 @app.delete("/remove/{vin}")
 async def remove(db: Session = Depends(get_db), vin: str = Path(regex="^[A-Za-z0-9]{17}$")):
     
@@ -88,3 +103,43 @@ async def remove(db: Session = Depends(get_db), vin: str = Path(regex="^[A-Za-z0
     except Exception as e:
         print(e)
         return {"VIN":vin, "cache_delete_success":False}
+
+
+@app.get('/export', response_class=FileResponse)
+async def export(background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
+    '''
+    Export db cache into a parquet file.
+    Returns a parquet file
+    '''
+
+    try:
+            
+        # Export cache to db and get the parquet file path
+        parquet_file = await crud.db_to_parquet(db)
+
+        # Return filepath
+        return parquet_file
+
+    except Exception as e:
+        return HTTPException(status_code=400, detail="Unable to return cached parquet file.\n {}".format(e))
+
+    finally:
+
+        # Delete temp dir once the response is sent
+        temp_dir = os.path.dirname(parquet_file)
+
+        # Make sure that the file exists 
+        if( os.path.exists(temp_dir) ):
+
+            # Add a background task to remove the folder/file once its sent
+            # as per https://fastapi.tiangolo.com/tutorial/background-tasks/
+            background_tasks.add_task(shutil.rmtree, temp_dir, ignore_errors=True)
+        
+
+
+
+# Entry
+if __name__ == "__main__":
+
+    # Run app 
+    uvicorn.run("main:app", host='0.0.0.0', port=8000, reload=True)

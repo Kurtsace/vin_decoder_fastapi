@@ -1,6 +1,5 @@
-from functools import cached_property
 import httpx
-from ..persistence.schemas import VINInfoGet
+from persistence.schemas import VINInfoGet
 
 
 async def decode(vin: str) -> VINInfoGet:
