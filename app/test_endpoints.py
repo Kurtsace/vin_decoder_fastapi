@@ -297,10 +297,11 @@ def test_export_multiple_parquet(setup_db):
         assert response.status_code == 200
     
         # Remove cached_result key from the response
-        del response.json()['cached_result']
+        vin_obj = response.json()
+        del vin_obj['cached_result']
 
         # Add entity returned to list of recieved vin dto's
-        returned_vins.append(response.json())
+        returned_vins.append(vin_obj)
 
     # Make sure all came back with a response 
     assert len(returned_vins) == len(vins)
@@ -320,7 +321,7 @@ def test_export_multiple_parquet(setup_db):
     # Make sure the dicts are the same for both returned_vins and parquet_vins from parquet
     # NO need to sort as the parquet vins and returned vins should be in the same order
     for vin1, vin2 in zip(returned_vins, parquet_vins):
-        assert(vin1, vin2)
+        assert vin1 == vin2
 
 
 def test_invalid_export_request(setup_db):
