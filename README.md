@@ -1,4 +1,4 @@
-[![Build](https://github.com/Kurtsace/vin_decoder_fastapi/actions/workflows/python-app.yml/badge.svg?branch=main)](https://github.com/Kurtsace/vin_decoder_fastapi/actions/workflows/python-app.yml)
+[![Build](https://github.com/Kurtsace/vin_decoder_fastapi/actions/workflows/python-app.yml/badge.svg?branch=main)](https://github.com/Kurtsace/vin_decoder_fastapi/actions/workflows/python-app.yml) [![Docker Image CI](https://github.com/Kurtsace/vin_decoder_fastapi/actions/workflows/docker-image.yml/badge.svg)](https://github.com/Kurtsace/vin_decoder_fastapi/actions/workflows/docker-image.yml)
 
 # vin_decoder_fastapi
 Implement a simple FastAPI backend to decode VINs, powered by the vPIC API and backed by a SQLite cache.
