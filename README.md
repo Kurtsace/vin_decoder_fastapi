@@ -5,22 +5,29 @@ Implement a simple FastAPI backend to decode VINs, powered by the vPIC API and b
 
 ### With Python/Uvicorn
 Install requirements with 
-"pip install -r requirements.txt"
+```
+pip install -r requirements.txt
+```
 
-Run "uvicorn app.main:app --reload" 
-OR "python3 main.py"
+Run 
+```uvicorn app.main:app --reload```
+
+OR 
+```
+python3 main.py
+```
 
 ### With Docker
 Build the image with 
-"docker build -t vpic_app ."
+```docker build -t vpic_app .```
 
 Run the image with port setting 
-"docker run -p 8000:8000 vpic_app"
+```docker run -p 8000:8000 vpic_app```
 
 
 ## To Run Tests
 
-Run "pytest"
+Run ```pytest```
 
 
 # Endpoints
