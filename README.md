@@ -1,3 +1,5 @@
+![workflow](https://github.com/kurtsace/vin_decoder_fastapi/actions/workflows/python-app.yml/badge.svg)
+
 # vin_decoder_fastapi
 Implement a simple FastAPI backend to decode VINs, powered by the vPIC API and backed by a SQLite cache.
 
