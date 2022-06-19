@@ -1,5 +1,8 @@
 # Ignore pycache folders
 */__pycache__/*
 
+# Ignore pytest cache
+*/.pytest_cache/*
+
 # Ignore .vscode
 */.vscode/*
