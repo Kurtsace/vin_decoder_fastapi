@@ -1,10 +1,10 @@
-from codecs import ignore_errors
 import shutil
+import uvicorn
+import os
+
 from fastapi import FastAPI, HTTPException, Path, Depends, BackgroundTasks
 from fastapi.responses import RedirectResponse, FileResponse
 from sqlalchemy.orm import Session
-import uvicorn
-import os
 
 from persistence.models import Base
 from persistence.database import engine, SessionLocal
@@ -18,8 +18,8 @@ app = FastAPI()
 
 # Dependency
 def get_db():
-    db = SessionLocal()
     try:
+        db = SessionLocal()
         yield db
     finally:
         db.close()
