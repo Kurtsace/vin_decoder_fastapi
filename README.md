@@ -35,7 +35,7 @@ docker run -p 8000:8000 vpic_app
 
 Run 
 ```
-pytest
+pytest -v
 ```
 
 
