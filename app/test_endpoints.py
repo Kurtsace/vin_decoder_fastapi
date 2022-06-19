@@ -101,7 +101,7 @@ def test_invalid_vin_lookup(setup_db):
 
 def test_invalid_lookup_request(setup_db):
     '''
-    Test sending the incorrect response headers but a valid vin to the endpoint /lookup.
+    Test sending the incorrect request headers but a valid vin to the endpoint /lookup.
     /lookup should only process GET requests 
     '''
 
@@ -178,7 +178,7 @@ def test_invalid_vin_remove(setup_db):
 
 def test_invalid_remove_request(setup_db):
     '''
-    Test sending the incorrect response headers but a valid vin to the endpoint /remove.
+    Test sending the incorrect request headers but a valid vin to the endpoint /remove.
     /remove should only process DELETE requests 
     '''
 
@@ -321,3 +321,22 @@ def test_export_multiple_parquet(setup_db):
     # NO need to sort as the parquet vins and returned vins should be in the same order
     for vin1, vin2 in zip(returned_vins, parquet_vins):
         assert(vin1, vin2)
+
+
+def test_invalid_export_request(setup_db):
+    '''
+    Test sending the incorrect request headers to the endpoint /export.
+    /export should only process GET requests 
+    '''
+
+    # POST request 
+    request = client.post('/export')
+    assert request.status_code == 405
+
+    # DELETE request 
+    request = client.delete('/export')
+    assert request.status_code == 405
+
+    # PUT request
+    request = client.put('/export')
+    assert request.status_code == 405
